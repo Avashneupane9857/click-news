@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { newsState } from "../store";
 
 interface News {
+  id: number;
   _news_title: string;
   _news_content: string;
   _news_author: string;
@@ -25,27 +26,24 @@ const AfterNews = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const recentNews = news?.filter((n: News) => n?.["_news_stat"] === "recent");
+  const recentNews = news?.filter((n: News) => n?._news_stat === "recent");
 
   const [shareLink, setShareLink] = useState("");
   const queryString = location.search;
 
-  // Use the URLSearchParams API to parse the query string
   const queryParams = new URLSearchParams(queryString);
 
-  // Access the value of a specific query parameter
-  const queryTitle = queryParams.get("_news_title") || "";
+  const newsId = parseInt(queryParams.get("id") || "0", 10);
 
   const currentNews =
-    location?.state?.news ||
-    news?.find((n: News) => n?.["_news_title"].trim() === queryTitle.trim());
+    location?.state?.news || news?.find((n: News) => n?.id === newsId);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  const newsContent = currentNews?.["_news_content"];
+  const newsContent = currentNews?._news_content;
   const oldLatestNews = news?.filter(
     (n: News) =>
-      n?.["_news_stat"].toLowerCase() === "latest" &&
-      n?.["_news_title"]?.trim() !== currentNews?.["_news_title"]?.trim()
+      n?._news_stat.toLowerCase() === "latest" &&
+      n?._news_title?.trim() !== currentNews?._news_title?.trim()
   );
 
   const latestNews =
@@ -58,40 +56,43 @@ const AfterNews = () => {
     ?.map((paragraph: string, index: number, array: string[]) => (
       <React.Fragment key={index}>
         <p>{paragraph}</p>
-        {/* Add <br> tag after each paragraph, except for the last one */}
         {index < array.length - 1 && <br />}
       </React.Fragment>
     ));
+
   useEffect(() => {
-    // Generate shareable link based on the current news content
     generateShareLink();
-    console.log("current news is ", currentNews);
+    window.scrollTo(0, 0);
   }, [location.state?.news]);
 
-  // Function to generate a shareable link with the news content encoded
-  const generateShareLink = () => {
+  const generateShareLink = async () => {
     if (currentNews) {
-      // Construct the shareable link with the encoded news content
-      const shareableLink = `${
-        window.location.origin
-      }/news/after?_news_title=${encodeURIComponent(currentNews._news_title)}`;
-      setShareLink(shareableLink);
+      const fullUrl = `${window.location.origin}/news/after?id=${currentNews?.id}`;
+      setShareLink(fullUrl);
     }
   };
 
-  // Function to handle share button click
   const handleShare = () => {
-    // Copy shareable link to clipboard
-    navigator.clipboard.writeText(shareLink).then(() => {
-      // Set copy success message
-      setCopySuccess(true);
-      // Reset copy success message after 2 seconds
-      setTimeout(() => {
-        setCopySuccess(false);
-      }, 2000);
-    });
+    if (navigator.share) {
+      navigator
+        .share({
+          title: currentNews?._news_title,
+          text: currentNews?._news_content,
+          url: shareLink,
+        })
+        .then(() => {
+          console.log("Thanks for sharing!");
+        })
+        .catch(console.error);
+    } else {
+      navigator.clipboard.writeText(shareLink).then(() => {
+        setCopySuccess(true);
+        setTimeout(() => {
+          setCopySuccess(false);
+        }, 2000);
+      });
+    }
   };
-
   return (
     <>
       <div className="w-full h-[400px] sm:h-[550px] relative">
@@ -109,7 +110,7 @@ const AfterNews = () => {
       <div className={` ${styles.padding} w-full h-auto flex flex-col gap-4 `}>
         <div className="w-full h-auto flex justify-around">
           <div className="w-[90%] sm:w-[60%] h-auto flex flex-col gap-8">
-            <p className="text-[18px] sm:text-[26px] sm:tracking-wider font-serif font-semibold">
+            <p className="text-[30px] sm:text-[40px] sm:tracking-wider font-serif font-semibold">
               {currentNews?._news_title}
             </p>
             <div className="flex gap-8 tracking-wide text-[14px] justify-between">

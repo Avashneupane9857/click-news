@@ -5,6 +5,7 @@ import { newsState } from "../store";
 import { useNavigate } from "react-router-dom";
 
 interface News {
+  id: number;
   _news_title: string;
   _news_content: string;
   _news_author: string;

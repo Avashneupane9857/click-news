@@ -3,6 +3,7 @@ import { useRecoilValue } from "recoil";
 import { newsState } from "../store";
 // import { news } from "../constants";
 interface News {
+  id: 0;
   _news_title: string;
   _news_content: string;
   _news_author: string;
@@ -80,7 +81,7 @@ const Hero = () => {
             <div className="text-white right-0 top-0 rounded-bl-xl absolute px-2 py-1 bg-[#04594D]">
               #{heroNews?.[1]?.["_news_category"]}
             </div>
-            <p className="text-[16px] sm:text-[20px] w-[80%] font-serif  bottom-10 left-5 text-white font-semibold absolute">
+            <p className="text-[16px] sm:text-[20px] w-[80%] font-serif  bottom-10 left-5 line-clamp-3 text-white font-semibold absolute">
               {heroNews?.[1]?.["_news_title"]}
             </p>
           </div>
@@ -101,12 +102,12 @@ const Hero = () => {
             <div className="text-white right-0 top-0 rounded-bl-xl absolute px-2 py-1 bg-[#04594D]">
               #{heroNews?.[2]?.["_news_category"]}
             </div>
-            <p className="text-[14px] sm:text-[20px] w-[80%] font-serif  bottom-10 left-5 text-white font-semibold absolute">
+            <p className="text-[14px] sm:text-[20px] w-[80%] font-serif line-clamp-3  bottom-10 left-5 text-white font-semibold absolute">
               {heroNews?.[2]?.["_news_title"]}
             </p>
           </div>
           <div className="w-[55%] sm:w-[58%] h-full flex flex-col justify-around ">
-            <p className="text-[16px] sm:text-[20px] font-semibold font-serif">
+            <p className="text-[16px] line-clamp-3 sm:text-[20px] font-semibold font-serif">
               {heroNews?.[2]?.["_news_title"]}
             </p>
             <div className="flex gap-3">

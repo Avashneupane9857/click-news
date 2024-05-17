@@ -21,6 +21,7 @@ const Pages = () => {
         <Route path="/lifestyle" element={<NewsPage category="Lifestyle" />} />
 
         <Route path="/society" element={<NewsPage category="Society" />} />
+        <Route path="/disasters" element={<NewsPage category="Disasters" />} />
         <Route path="/news/after" element={<AfterNews />} />
       </Routes>
     </BrowserRouter>

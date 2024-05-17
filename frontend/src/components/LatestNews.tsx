@@ -8,6 +8,7 @@ import { useRecoilValue } from "recoil";
 import { newsState } from "../store";
 
 interface News {
+  id: number;
   _news_title: string;
   _news_content: string;
   _news_author: string;
@@ -27,6 +28,7 @@ const LatestNews = () => {
 
   const [currentNews, setCurrentNews] = useState<News[]>([
     {
+      id: 0,
       _news_title: "",
       _news_content: "",
       _news_author: "",

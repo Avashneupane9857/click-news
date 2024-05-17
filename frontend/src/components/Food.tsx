@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { newsState } from "../store";
 interface News {
+  id: number;
   _news_title: string;
   _news_content: string;
   _news_author: string;
@@ -28,6 +29,7 @@ const Food = () => {
 
   const [currentNews, setCurrentNews] = useState<News[]>([
     {
+      id: 0,
       _news_title: "",
       _news_content: "",
       _news_author: "",
@@ -102,7 +104,7 @@ const Food = () => {
                   <div className="text-white right-0 top-0 rounded-bl-xl rounded-tr-xl absolute px-2 py-1 bg-[#04594D]">
                     #{l?.["_news_category"]}
                   </div>
-                  <p className="text-white font-serif text-[18px] absolute left-4 bottom-5">
+                  <p className="text-white font-serif line-clamp-2 text-[18px] absolute left-4 bottom-5">
                     {l?.["_news_title"]}
                   </p>
                 </div>

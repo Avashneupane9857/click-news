@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { newsState } from "../store";
 interface News {
+  id: number;
   _news_title: string;
   _news_content: string;
   _news_author: string;
@@ -22,28 +23,21 @@ interface News {
 }
 const NewsPage = ({ category }: { category: string }) => {
   const news = useRecoilValue(newsState);
-  let current: News[];
 
-  const [currentNews, setCurrentNews] = useState<News[]>([
-    {
-      _news_title: "",
-      _news_content: "",
-      _news_author: "",
-      _news_date: "",
-      _news_stat: "",
-      _news_category: "",
-      _news_img: "",
-    },
-  ]);
+  const [currentNews, setCurrentNews] = useState<News[]>([]);
+  const [current, setCurrent] = useState<News[]>([]);
+
   useEffect(() => {
-    current = news?.filter(
+    console.log(news);
+    const filteredNews = news?.filter(
       (n: News) =>
         n?.["_news_category"].toLowerCase() === category.toLowerCase()
     );
-    setCurrentNews(current?.slice(0, 4));
-    // console.log("category is ", category, " current is ", current);
-  }, [category]);
-  //   console.log("current news is ", currentNews);
+    console.log("current news is ", filteredNews);
+    setCurrent(filteredNews);
+    setCurrentNews(filteredNews?.slice(0, 4));
+  }, [category, news]);
+
   const recent = news?.filter(
     (n: News) => n?.["_news_stat"].toLowerCase() === "recent"
   );
@@ -54,11 +48,18 @@ const NewsPage = ({ category }: { category: string }) => {
 
   const handleMore = () => {
     console.log("current news before ", currentNews);
-    const updatedCurrentNews = [...current]; // Create a copy of current news
-    setCurrentNews(updatedCurrentNews); // Update currentNews state
-    console.log("current news after ", updatedCurrentNews);
+    if (current && current.length > currentNews.length) {
+      const additionalNews = current.slice(
+        currentNews.length,
+        currentNews.length + 4
+      );
+      const updatedCurrentNews = [...currentNews, ...additionalNews];
+      console.log("updated current news is ", updatedCurrentNews);
+      setCurrentNews(updatedCurrentNews);
+    } else {
+      console.log("No more news to load");
+    }
   };
-
   return (
     <>
       <HeroHeader />
@@ -77,16 +78,16 @@ const NewsPage = ({ category }: { category: string }) => {
                   onClick={() =>
                     navigate("/news/after", { state: { news: n } })
                   }
-                  className="cursor-pointer w-full h-[250px] flex items-center justify-around  border-b border-slate-200 "
+                  className="cursor-pointer w-full h-auto flex items-center justify-around  border-b border-slate-200 "
                 >
-                  <div className="w-[35%] h-[70%]">
+                  <div className="w-[35%] h-[200px]">
                     <img
                       src={n?.["_news_img"]}
                       alt="img"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="pl-3 flex h-[90%] w-[60%] flex-col items-start gap-3 justify-center">
+                  <div className="pl-3 flex w-[60%] flex-col items-start gap-3 justify-center">
                     {" "}
                     <p className="text-[16px] sm:text-[22px] font-semibold">
                       {n?.["_news_title"]}
